@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+    MyDummyRole:
+        Type: AWS::IAM::Role
+        Properties:
+           AssumeRolePolicyDocument:
+               Statement:
+                  - Effect: Allow
+                    Principal:
+                       Service:
+                         - ec2.amazonaws.com
+                    Action:
+                      - sts:AssumeRole
+           Path: /
+    MyDummyInstanceProfile:
+       Type: AWS::IAM::InstanceProfile
+       Properties:
+          Path: /
+          Roles:
+            - !Ref MyDummyRole
+    MuDummyRolePolicies:
+       Type: AWS::IAM::Policy
+       Properties:
+           PolicyName: myDummy
+           PolicyDocument:
+              Statement:
+                 - Effect: Allow
+                   Action: "*"
+                   Resource: "*"
+           Roles: 
+              - !Ref MyDummyRole
+    myEc2Instance:
+       Type: AWS::EC2::Instance
+       Properties:
+          ImageId: ami-0eb7496c2e0403237
+          InstanceType: t2.nano
+          Monitoring: true
+          DisableApiTermination: false
+          IamInstanceProfile:
+             !Ref MyDummyInstanceProfile
+
+          
+
